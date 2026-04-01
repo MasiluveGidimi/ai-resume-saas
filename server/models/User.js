@@ -5,14 +5,14 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   credits: { type: Number, default: 5 },
   resumes: [
-    {
-      name: String,
-      skills: String,
-      experience: String,
-      content: String,
-      createdAt: { type: Date, default: Date.now }
+  {
+    content: String,
+    createdAt: {
+      type: Date,
+      default: Date.now
     }
-  ]
+  }
+]
 });
 
 export default mongoose.model("User", userSchema);
