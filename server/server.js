@@ -1,7 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import path from "path";
 import cors from "cors";
 
 
@@ -10,7 +9,6 @@ import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
 const app = express();
-const __dirname = path.resolve();
 
 app.use(cors());
 app.use(express.json());
@@ -25,9 +23,10 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/auth", authRoutes);
 
 
-app.use(express.static(path.join(__dirname, "../client/dist")));
-app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+app.use((req, res) => {
+  res.status(404).json({
+    message: "Route not found"
+  });
 });
 
 
