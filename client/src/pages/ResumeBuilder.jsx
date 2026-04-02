@@ -17,14 +17,13 @@ function ResumeBuilder() {
       try {
         const token = localStorage.getItem("token");
 
-        const res = await API.get("/api/resume/history", {
-  headers: {
-    Authorization: `Bearer ${token}`
-  }
-});
-          
+        const res = await API.get("/resume/history", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-        setCredits(res.data.credits || 0);
+        setCredits(res.data.credits);
       } catch (err) {
         console.error("Error fetching credits:", err);
       }
@@ -35,7 +34,7 @@ function ResumeBuilder() {
 
   
   const handleGenerate = async () => {
-    if (credits <= 0) return alert("⚠️ You have no credits left!");
+    if (credits <= 0) return alert("⚠️ No credits left!");
 
     try {
       setLoading(true);
@@ -43,18 +42,17 @@ function ResumeBuilder() {
       const token = localStorage.getItem("token");
 
       const res = await API.post(
-        "/api/ai/generate/resume",
+        "/ai/generate/resume",
         { name, skills, experience },
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          }
+          },
         }
       );
 
       
-      setResult(res.data.content);
+      setResult(res.data.resume);
 
       
       setCredits(res.data.remainingCredits);
@@ -67,15 +65,12 @@ function ResumeBuilder() {
     }
   };
 
-  
   const downloadPDF = () => {
     if (!result) return;
 
     const doc = new jsPDF();
-
     const lines = doc.splitTextToSize(result, 180);
     doc.text(lines, 10, 10);
-
     doc.save(`${name || "resume"}.pdf`);
   };
 
@@ -83,10 +78,9 @@ function ResumeBuilder() {
     <div className="resume-container">
       <h1 className="resume-title">AI Resume Builder</h1>
 
-  
+      
       <p>Credits left: {credits}</p>
 
-      
       <input
         placeholder="Name"
         value={name}
@@ -105,25 +99,14 @@ function ResumeBuilder() {
         onChange={(e) => setExperience(e.target.value)}
       />
 
-      
-      <button
-        className="btn-generate"
-        onClick={handleGenerate}
-        disabled={loading}
-      >
+      <button onClick={handleGenerate} disabled={loading}>
         {loading ? "Generating..." : "⚡ Generate Resume"}
       </button>
 
-    
       {result && (
         <>
-          <div className="resume-result">
-            <pre>{result}</pre>
-          </div>
-
-          <button className="btn-download" onClick={downloadPDF}>
-            📄 Download PDF
-          </button>
+          <pre>{result}</pre>
+          <button onClick={downloadPDF}>📄 Download PDF</button>
         </>
       )}
     </div>

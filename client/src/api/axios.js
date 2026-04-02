@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api`,
+  baseURL: "https://ai-resume-saas-9twy.onrender.com/api",
 });
 
 export default API;
