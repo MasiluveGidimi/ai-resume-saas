@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import API from "../api/axios";
 import { jsPDF } from "jspdf";
@@ -17,59 +16,114 @@ function ResumeBuilder() {
     const fetchCredits = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await API.get("/resume/history", { headers: { Authorization: token } });
+
+        const res = await API.get("/api/resume/history", {
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
+});
+          
+
         setCredits(res.data.credits || 0);
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching credits:", err);
       }
     };
+
     fetchCredits();
   }, []);
 
+  
   const handleGenerate = async () => {
     if (credits <= 0) return alert("⚠️ You have no credits left!");
+
     try {
       setLoading(true);
+
       const token = localStorage.getItem("token");
+
       const res = await API.post(
-        "/resume/generate",
+        "/api/ai/generate/resume",
         { name, skills, experience },
-        { headers: { Authorization: token } }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        }
       );
+
+      
       setResult(res.data.content);
-      setCredits(prev => prev - 1);
+
+      
+      setCredits(res.data.remainingCredits);
+
     } catch (error) {
-      console.error(error);
+      console.error("Error generating resume:", error);
       setResult("Something went wrong ❌");
     } finally {
       setLoading(false);
     }
   };
 
+  
   const downloadPDF = () => {
     if (!result) return;
+
     const doc = new jsPDF();
-    doc.text(result, 10, 10);
+
+    const lines = doc.splitTextToSize(result, 180);
+    doc.text(lines, 10, 10);
+
     doc.save(`${name || "resume"}.pdf`);
   };
 
   return (
     <div className="resume-container">
       <h1 className="resume-title">AI Resume Builder</h1>
+
+  
       <p>Credits left: {credits}</p>
 
-      <input placeholder="Name" onChange={e => setName(e.target.value)} />
-      <textarea placeholder="Skills" onChange={e => setSkills(e.target.value)} />
-      <textarea placeholder="Experience" onChange={e => setExperience(e.target.value)} />
+      
+      <input
+        placeholder="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
 
-      <button className="btn-generate" onClick={handleGenerate} disabled={loading}>
+      <textarea
+        placeholder="Skills"
+        value={skills}
+        onChange={(e) => setSkills(e.target.value)}
+      />
+
+      <textarea
+        placeholder="Experience"
+        value={experience}
+        onChange={(e) => setExperience(e.target.value)}
+      />
+
+      
+      <button
+        className="btn-generate"
+        onClick={handleGenerate}
+        disabled={loading}
+      >
         {loading ? "Generating..." : "⚡ Generate Resume"}
       </button>
 
+    
       {result && (
         <>
-          <div className="resume-result"><pre>{result}</pre></div>
-          <button className="btn-download" onClick={downloadPDF}>📄 Download PDF</button>
+          <div className="resume-result">
+            <pre>{result}</pre>
+          </div>
+
+          <button className="btn-download" onClick={downloadPDF}>
+            📄 Download PDF
+          </button>
         </>
       )}
     </div>
@@ -77,4 +131,3 @@ function ResumeBuilder() {
 }
 
 export default ResumeBuilder;
-   
