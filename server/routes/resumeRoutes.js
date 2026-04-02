@@ -30,7 +30,7 @@ router.post("/someRoute", handler);
 
 router.get("/history", authMiddleware, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.userId;
 
     const user = await User.findById(userId);
 

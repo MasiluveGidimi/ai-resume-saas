@@ -5,7 +5,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export const generateResume = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.userId;
 
     const user = await User.findById(userId);
 

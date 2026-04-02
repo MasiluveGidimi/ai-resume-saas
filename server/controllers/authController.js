@@ -5,9 +5,21 @@ import User from "../models/User.js";
 export const register = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     const hashed = await bcrypt.hash(password, 10);
-    const user = await User.create({ email, password: hashed });
-    res.status(201).json({ message: "User registered", userId: user._id });
+
+    const user = await User.create({
+      email,
+      password: hashed,
+      credits: 5
+    });
+
+    res.status(201).json({
+      message: "User registered",
+      userId: user._id,
+      credits: user.credits
+    });
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
