@@ -17,11 +17,17 @@ export const generateResume = async (req, res) => {
     const { name, skills, experience } = req.body;
 
     const prompt = `
-    Create a professional resume for:
-    Name: ${name}
-    Skills: ${skills}
-    Experience: ${experience}
-    Format with Summary, Skills, Experience
+   Generate a professional resume for:
+
+      Name: ${name}
+      Skills: ${skills}
+      Experience: ${experience}
+
+      Make it:
+      - ATS-friendly
+      - Well formatted
+      - Job-winning
+      - Modern and concise
     `;
 
     const completion = await openai.chat.completions.create({
