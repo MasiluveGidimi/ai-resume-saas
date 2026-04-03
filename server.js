@@ -3,9 +3,9 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
 
-import aiRoutes from "./routes/aiRoutes.js";
-import authRoutes from "./routes/authRoutes.js";
-import resumeRoutes from "./routes/resumeRoutes.js";
+import aiRoutes from "./server/routes/aiRoutes.js";
+import authRoutes from "./server/routes/authRoutes.js";
+import resumeRoutes from "./server/routes/resumeRoutes.js";
 
 dotenv.config();
 const app = express();
