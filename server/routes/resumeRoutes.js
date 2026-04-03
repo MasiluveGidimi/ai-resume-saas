@@ -1,7 +1,7 @@
 import express from "express";
-import Resume from "../models/Resume.js";
-import User from "../models/User.js";
-import { authMiddleware } from "../middleware/authMiddleware.js";
+import Resume from "../../server/models/Resume.js";
+import User from "../../server/models/User.js";
+import { authMiddleware } from "../../server/middleware/authMiddleware.js";
 
 const router = express.Router();
 
