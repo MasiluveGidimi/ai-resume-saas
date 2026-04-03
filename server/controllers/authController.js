@@ -4,11 +4,12 @@ import User from "../models/User.js";
 
 export const register = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { name, email, password } = req.body;
 
     const hashed = await bcrypt.hash(password, 10);
 
     const user = await User.create({
+      name,
       email,
       password: hashed,
       credits: 5
@@ -35,7 +36,14 @@ export const login = async (req, res) => {
     if (!match) return res.status(401).json({ error: "Invalid credentials" });
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-    res.json({ token, credits: user.credits });
+    res.json({ 
+      token, 
+      user: {
+        id: user._id,
+        email: user.email,
+        credits: user.credits 
+     } 
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
