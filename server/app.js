@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
 
-import userRoutes from "../routes/userRoutes.js";
-import aiRoutes from "../routes/aiRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
 
 const app = express();
 
