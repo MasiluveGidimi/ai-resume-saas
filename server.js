@@ -5,9 +5,6 @@ import app from "./server/app.js";
 dotenv.config();
 
 
-console.log("MONGO_URL:", process.env.MONGO_URL);
-
-
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log("MongoDB connected ✅"))
   .catch(err => console.error("MongoDB error:", err));

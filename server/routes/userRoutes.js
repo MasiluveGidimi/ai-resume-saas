@@ -10,12 +10,11 @@ router.post("/register", async (req, res) => {
     const { email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
-
     if (existingUser) {
       return res.status(400).json({ error: "User already exists" });
     }
 
-    const user = new User({ email, password });
+    const user = new User({ email, password, credits: 5 });
     await user.save();
 
     const token = jwt.sign(
@@ -25,8 +24,9 @@ router.post("/register", async (req, res) => {
 
     res.json({ token });
   } catch (error) {
-    res.status(500).json({ error: "Register failed" });
-  }
+  console.error("REGISTER ERROR:", error);
+  res.status(500).json({ error: error.message });
+ }
 });
 
 
@@ -47,12 +47,13 @@ router.post("/login", async (req, res) => {
 
     res.json({ token });
   } catch (error) {
-    res.status(500).json({ error: "Login failed" });
-  }
+  console.error("LOGIN ERROR:", error);
+  res.status(500).json({ error: error.message });
+ }
 });
 
 
-router.get("/me", async (req, res) => {
+router.get("/me", (req, res) => {
   res.json({ credits: 5 });
 });
 
