@@ -10,29 +10,46 @@ function App() {
   });
 
   const [preview, setPreview] = useState("");
-  const [credits, setCredits] = useState(5);
+  const [credits, setCredits] = useState(0);
 
-  const token = "Bearer token"; 
+  const token = "Bearer token";
+  
   
   useEffect(() => {
     const fetchCredits = async () => {
-      const res = await fetch(`${API}/api/user/me`, {
-        headers: {
-          Authorization: token
-        }
-      });
+      try {
+        const res = await fetch(`${API}/api/user/me`, {
+          headers: {
+            Authorization: token
+          }
+        });
 
-      const data = await res.json();
-      setCredits(data.credits);
+        if (!res.ok) {
+          console.log("Failed to load credits");
+          return;
+        }
+
+        const data = await res.json();
+        console.log("Credits loaded:", data);
+
+        setCredits(data.credits);
+      } catch (err) {
+        console.error("Error fetching credits:", err);
+      }
     };
 
     fetchCredits();
   }, []);
 
+  
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
   };
 
+  
   const generateResume = async () => {
     const res = await fetch(`${API}/api/resume/generate`, {
       method: "POST",
@@ -44,10 +61,16 @@ function App() {
     });
 
     const data = await res.json();
+
+    if (data.error) {
+      alert(data.error);
+      return;
+    }
+
     setPreview(data.resume);
   };
 
- 
+  
   const downloadPDF = async () => {
     const res = await fetch(`${API}/api/resume/pdf`, {
       method: "POST",
@@ -64,6 +87,7 @@ function App() {
       return;
     }
 
+   
     const blob = await res.blob();
     const url = window.URL.createObjectURL(blob);
 
@@ -76,8 +100,9 @@ function App() {
     setCredits(prev => prev - 1);
   };
 
+ 
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: 20, fontFamily: "Arial" }}>
       <h1>AI Resume Builder</h1>
 
       <h3>Credits: {credits}</h3>
@@ -87,37 +112,41 @@ function App() {
         placeholder="Name"
         onChange={handleChange}
       />
-      <br />
+      <br /><br />
 
       <textarea
         name="experience"
         placeholder="Experience"
         onChange={handleChange}
       />
-      <br />
+      <br /><br />
 
       <textarea
         name="skills"
         placeholder="Skills (comma separated)"
         onChange={handleChange}
       />
-      <br />
+      <br /><br />
 
       <button onClick={generateResume}>
         Generate Preview
       </button>
 
+      {/* PREVIEW */}
       {preview && (
         <div style={{ marginTop: 20 }}>
           <h2>Preview</h2>
 
-          <pre style={{
-            background: "#f5f5f5",
-            padding: 10,
-            whiteSpace: "pre-wrap"
+          <div style={{
+            background: "#f4f4f4",
+            padding: 15,
+            whiteSpace: "pre-wrap",
+            borderRadius: 8
           }}>
             {preview}
-          </pre>
+          </div>
+
+          <br />
 
           <button onClick={downloadPDF}>
             Download PDF (-1 credit)
