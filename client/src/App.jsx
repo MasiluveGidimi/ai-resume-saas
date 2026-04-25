@@ -14,32 +14,25 @@ function App() {
 
   const token = "Bearer token";
   
-  
-  useEffect(() => {
-    const fetchCredits = async () => {
-      try {
-        const res = await fetch(`${API}/api/user/me`, {
-          headers: {
-            Authorization: token
-          }
-        });
 
-        if (!res.ok) {
-          console.log("Failed to load credits");
-          return;
+useEffect(() => {
+  const fetchCredits = async () => {
+    try {
+      const res = await fetch(`${API}/api/user/me`, {
+        headers: {
+          Authorization: "Bearer token"
         }
+      });
 
-        const data = await res.json();
-        console.log("Credits loaded:", data);
+      const data = await res.json();
+      setCredits(data.credits || 0);
+    } catch (err) {
+      console.log("API failed", err);
+    }
+  };
 
-        setCredits(data.credits);
-      } catch (err) {
-        console.error("Error fetching credits:", err);
-      }
-    };
-
-    fetchCredits();
-  }, []);
+  fetchCredits();
+}, []);
 
   
   const handleChange = (e) => {
