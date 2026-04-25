@@ -1,7 +1,11 @@
-import Home from "./pages/Home";
+import React from "react";
 
 function App() {
-  return <h1>App is working 🚀</h1>;
+  return (
+    <div>
+      <h1>🔥 App is working</h1>
+    </div>
+  );
 }
 
 export default App;
