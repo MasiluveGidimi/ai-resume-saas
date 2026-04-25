@@ -1,7 +1,7 @@
 import Home from "./pages/Home";
 
 function App() {
-  return <Home />;
+  return <h1>App is working 🚀</h1>;
 }
 
 export default App;
